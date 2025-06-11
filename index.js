@@ -1,17 +1,17 @@
-require("dotenv").config(); // Make sure this is at the top!
+require("dotenv").config(); // ✅ Load env vars
 
 const express = require("express");
-const app = express();
 const cors = require("cors");
-require("dotenv").config();
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+
+const app = express();
 const port = process.env.PORT || 3000;
-const { MongoClient, ServerApiVersion } = require("mongodb");
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ Use environment variables here
+// MongoDB connection
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.f3o1onw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 const client = new MongoClient(uri, {
@@ -37,14 +37,21 @@ async function run() {
 
     app.post("/services", async (req, res) => {
       const servicesData = req.body;
-      // console.log(servicesData);
       const result = await servicesCollection.insertOne(servicesData);
       res.send(result);
+    });
+
+    app.get("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const service = await servicesCollection.findOne({
+        _id: new ObjectId(id),
+      });
+      res.send(service);
     });
   } catch (error) {
     console.error("❌ Connection failed:", error);
   } finally {
-    // await client.close();
+    // await client.close(); // Optional
   }
 }
 
