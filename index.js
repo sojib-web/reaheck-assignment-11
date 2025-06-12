@@ -73,6 +73,12 @@ async function run() {
       });
       res.send(result);
     });
+
+    app.post("/services", async (req, res) => {
+      const schedule = req.body;
+      const result = await servicesCollection.insertOne(schedule);
+      res.send(result);
+    });
   } catch (error) {
     console.error("❌ Connection failed:", error);
   }
