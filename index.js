@@ -34,7 +34,7 @@ async function run() {
 
     // Get all services
     app.get("/services", async (req, res) => {
-      const getData = await servicesCollection.find().toArray();
+      const getData = await servicesCollection.find().limit(6).toArray();
       res.send(getData);
     });
 
