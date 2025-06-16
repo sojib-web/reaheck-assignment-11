@@ -30,7 +30,7 @@ const verifyToken = (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: "Unauthorized Access" });
   }
-  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET_KEYS, (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Unauthorized Access" });
     }
@@ -63,7 +63,7 @@ async function run() {
 
     app.post("/jwt", async (req, res) => {
       const user = req.body;
-      const token = jwt.sign(user, process.env.JWT_SECRET_KEY, {
+      const token = jwt.sign(user, process.env.JWT_SECRET_KEYS, {
         expiresIn: "2h",
       });
       res.cookie("token", token, {
