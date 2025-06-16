@@ -178,6 +178,23 @@ async function run() {
       );
       res.send(result);
     });
+
+    app.get("/stats", async (req, res) => {
+      try {
+        const totalUsers = await usersCollection.estimatedDocumentCount();
+        const totalServices = await servicesCollection.estimatedDocumentCount();
+        const totalReviews = await reviewsCollection.estimatedDocumentCount();
+
+        res.send({
+          user: totalUsers,
+          services: totalServices,
+          reviews: totalReviews,
+        });
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+        res.status(500).send({ error: "Failed to fetch stats" });
+      }
+    });
   } catch (error) {
     console.error("❌ Connection failed:", error);
   }
