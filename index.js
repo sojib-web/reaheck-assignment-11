@@ -195,6 +195,40 @@ async function run() {
         res.status(500).send({ error: "Failed to fetch stats" });
       }
     });
+
+    app.get("/top-rated-services", async (req, res) => {
+      try {
+        const result = await servicesCollection
+          .aggregate([
+            {
+              $lookup: {
+                from: "reviews", // Must match actual collection name
+                localField: "_id",
+                foreignField: "serviceId",
+                as: "reviews",
+              },
+            },
+            {
+              $addFields: {
+                rating: { $avg: "$reviews.rating" }, // renamed to rating
+                totalReviews: { $size: "$reviews" },
+              },
+            },
+            {
+              $sort: { rating: -1 },
+            },
+            {
+              $limit: 4,
+            },
+          ])
+          .toArray();
+
+        res.send(result);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send({ message: "Failed to fetch top services" });
+      }
+    });
   } catch (error) {
     console.error("❌ Connection failed:", error);
   }
