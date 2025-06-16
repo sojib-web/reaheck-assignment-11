@@ -1,16 +1,43 @@
 // @ts-nocheck
-require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
 
+const logger = (req, res, next) => {
+  console.log(`inside the logger middleware`, req.method, req.url);
+  next();
+};
+
+const verifyToken = (req, res, next) => {
+  const token = req?.cookies?.token;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized Access" });
+  }
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Unauthorized Access" });
+    }
+    req.decoded = decoded;
+    next();
+  });
+};
 // MongoDB connection URI
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.f3o1onw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -32,6 +59,19 @@ async function run() {
     const usersCollection = client.db("serviceDB").collection("users");
     const reviewsCollection = client.db("serviceDB").collection("reviews"); // <-- Added this
 
+    //  jwt token related API
+
+    app.post("/jwt", async (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.JWT_SECRET_KEY, {
+        expiresIn: "2h",
+      });
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+      });
+      res.send({ success: true });
+    });
     // Get all services
     app.get("/services", async (req, res) => {
       const getData = await servicesCollection.find().limit(6).toArray();
