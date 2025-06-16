@@ -38,6 +38,11 @@ async function run() {
       res.send(getData);
     });
 
+    app.get("/reviews", async (req, res) => {
+      const getData = await reviewsCollection.find().toArray();
+      res.send(getData);
+    });
+
     // Add new service
     app.post("/services", async (req, res) => {
       const servicesData = req.body;
@@ -147,6 +152,31 @@ async function run() {
       } else {
         res.status(500).send({ message: "Failed to add review" });
       }
+    });
+
+    // DELETE a review
+    app.delete("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await reviewsCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
+      res.send(result);
+    });
+
+    app.patch("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const { text, rating } = req.body;
+
+      const result = await reviewsCollection.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: {
+            text,
+            rating,
+          },
+        }
+      );
+      res.send(result);
     });
   } catch (error) {
     console.error("❌ Connection failed:", error);
