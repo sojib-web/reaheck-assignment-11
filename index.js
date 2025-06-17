@@ -24,25 +24,25 @@ app.use(
 
 app.use(express.json());
 
-// const logger = (req, res, next) => {
-//   console.log(`inside the logger middleware`, req.method, req.url);
-//   next();
-// };
+const logger = (req, res, next) => {
+  console.log(`inside the logger middleware`, req.method, req.url);
+  next();
+};
 
-// const verifyToken = (req, res, next) => {
-//   const token = req?.cookies?.token;
-//   console.log("inside the verify token middleware", token);
-//   if (!token) {
-//     return res.status(401).send({ message: "Unauthorized access" });
-//   }
-//   jwt.verify(token, process.env.JWT_SECRET_KEYS, (err, decoded) => {
-//     // if (err) {
-//     //   return res.status(401).send({ message: "Invalid token" });
-//     // }
-//     req.decoded = decoded;
-//     next();
-//   });
-// };
+const verifyToken = (req, res, next) => {
+  const token = req?.cookies?.token;
+  console.log("inside the verify token middleware", token);
+  if (!token) {
+    return res.status(401).send({ message: "Unauthorized access" });
+  }
+  jwt.verify(token, process.env.JWT_SECRET_KEYS, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({ message: "Invalid token" });
+    }
+    req.decoded = decoded;
+    next();
+  });
+};
 // MongoDB connection URI
 const uri = `mongodb+srv://${process.env.DB_USERS}:${process.env.DB_PASSWORD}@cluster0.f3o1onw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -66,22 +66,22 @@ async function run() {
 
     //  jwt token related API
 
-    // app.post("/jwt", async (req, res) => {
-    //   const { email } = req.body;
-    //   const user = { email };
-    //   const token = jwt.sign(user, process.env.JWT_SECRET_KEYS, {
-    //     expiresIn: "2h",
-    //   });
-    //   res.cookie("token", token, {
-    //     httpOnly: true,
-    //     secure: false,
-    //   });
-    //   res.send({ message: "Login successful" });
-    // });
+    app.post("/jwt", async (req, res) => {
+      const { email } = req.body;
+      const user = { email };
+      const token = jwt.sign(user, process.env.JWT_SECRET_KEYS, {
+        expiresIn: "2h",
+      });
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+      });
+      res.send({ message: true });
+    });
 
     // Get all services
-    app.get("/services", async (req, res) => {
-      // console.log("inside service api", req.cookies, req.decoded);
+    app.get("/services", verifyToken, async (req, res) => {
+      console.log("inside service api", req.cookies, req.decoded);
       const getData = await servicesCollection.find().limit(6).toArray();
       res.send(getData);
     });
@@ -184,7 +184,7 @@ async function run() {
       if (
         !review.serviceId ||
         !review.name ||
-        review.rating === undefined || // allow 0 rating if needed
+        review.rating === undefined ||
         !review.comment
       ) {
         return res
