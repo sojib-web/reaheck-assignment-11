@@ -14,10 +14,14 @@ const port = process.env.PORT || 5000;
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "http://localhost:5173",
+      "https://service-review-system-a221e.web.app",
+    ],
     credentials: true,
   })
 );
+
 app.use(express.json());
 
 const logger = (req, res, next) => {
@@ -32,9 +36,9 @@ const verifyToken = (req, res, next) => {
     return res.status(401).send({ message: "Unauthorized access" });
   }
   jwt.verify(token, process.env.JWT_SECRET_KEYS, (err, decoded) => {
-    if (err) {
-      return res.status(401).send({ message: "Invalid token" });
-    }
+    // if (err) {
+    //   return res.status(401).send({ message: "Invalid token" });
+    // }
     req.decoded = decoded;
     next();
   });
@@ -75,7 +79,7 @@ async function run() {
       res.send({ message: "Login successful" });
     });
     // Get all services
-    app.get("/services", logger, verifyToken, async (req, res) => {
+    app.get("/services", async (req, res) => {
       // console.log("inside service api", req.cookies, req.decoded);
       const getData = await servicesCollection.find().limit(6).toArray();
       res.send(getData);
