@@ -11,6 +11,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
+app.use(cookieParser());
 app.use(
   cors({
     origin: ["http://localhost:5173"],
@@ -18,7 +19,6 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(cookieParser());
 
 const logger = (req, res, next) => {
   console.log(`inside the logger middleware`, req.method, req.url);
@@ -27,12 +27,13 @@ const logger = (req, res, next) => {
 
 const verifyToken = (req, res, next) => {
   const token = req?.cookies?.token;
+  console.log("inside the verify token middleware", token);
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized Access" });
+    return res.status(401).send({ message: "Unauthorized access" });
   }
   jwt.verify(token, process.env.JWT_SECRET_KEYS, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ message: "Unauthorized Access" });
+      return res.status(401).send({ message: "Invalid token" });
     }
     req.decoded = decoded;
     next();
@@ -62,7 +63,8 @@ async function run() {
     //  jwt token related API
 
     app.post("/jwt", async (req, res) => {
-      const user = req.body;
+      const { email } = req.body;
+      const user = { email };
       const token = jwt.sign(user, process.env.JWT_SECRET_KEYS, {
         expiresIn: "2h",
       });
@@ -70,10 +72,11 @@ async function run() {
         httpOnly: true,
         secure: false,
       });
-      res.send({ success: true });
+      res.send({ message: "Login successful" });
     });
     // Get all services
-    app.get("/services", async (req, res) => {
+    app.get("/services", logger, verifyToken, async (req, res) => {
+      // console.log("inside service api", req.cookies, req.decoded);
       const getData = await servicesCollection.find().limit(6).toArray();
       res.send(getData);
     });
