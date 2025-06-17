@@ -15,7 +15,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
+      "http://localhost:5174",
       "https://service-review-system-a221e.web.app",
     ],
     credentials: true,
@@ -56,8 +56,8 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
-    await client.db("admin").command({ ping: 1 });
+    // await client.connect();
+    // await client.db("admin").command({ ping: 1 });
     console.log("✅ Connected to MongoDB Atlas successfully!");
 
     const servicesCollection = client.db("serviceDB").collection("services");
@@ -250,7 +250,7 @@ async function run() {
           .aggregate([
             {
               $lookup: {
-                from: "reviews", // Must match actual collection name
+                from: "reviews",
                 localField: "_id",
                 foreignField: "serviceId",
                 as: "reviews",
@@ -258,7 +258,7 @@ async function run() {
             },
             {
               $addFields: {
-                rating: { $avg: "$reviews.rating" }, // renamed to rating
+                rating: { $avg: "$reviews.rating" },
                 totalReviews: { $size: "$reviews" },
               },
             },
