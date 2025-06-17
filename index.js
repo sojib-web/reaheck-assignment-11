@@ -80,7 +80,7 @@ async function run() {
     });
 
     // Get all services
-    app.get("/services", verifyToken, async (req, res) => {
+    app.get("/services", async (req, res) => {
       console.log("inside service api", req.cookies, req.decoded);
       const getData = await servicesCollection.find().limit(6).toArray();
       res.send(getData);
