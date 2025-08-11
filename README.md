@@ -9,8 +9,8 @@ The **Service Review System** is a modern full-stack web application where users
 ## 🚀 Live Demo
 
 - **Client Side (Live Website):** [https://service-review-system-a221e.web.app/](https://service-review-system-a221e.web.app/)  
-- **Client Repo:** [GitHub - Client](https://github.com/Programming-Hero-Web-Course4/b11a11-client-side-sojib-web)  
-
+- **Client Repo:** [GitHub - Client](https://github.com/sojib-web/reaheck-assignment-11)  
+- **Server Repo:** [GitHub - Server](https://github.com/sojib-web/reaheck-assignment-11-server)
 
 ---
 
@@ -37,8 +37,9 @@ The **Service Review System** is a modern full-stack web application where users
 
 ## 📸 Screenshot
 
-![Service Review System Screenshot](https://i.ibb.co/qMPL09py/service-review-system-a221e-web-app.png)  
-
+<p align="center">
+  <img src="https://i.ibb.co/qMPL09py/service-review-system-a221e-web-app.png" alt="Service Review System Screenshot" width="80%" />
+</p>
 
 ---
 
@@ -46,10 +47,35 @@ The **Service Review System** is a modern full-stack web application where users
 
 ### Client Side
 
+- `react-router`
+- `firebase`
+- `axios`
+- `sweetalert2`
+- `react-rating`
+- `react-countup`
+
+### Server Side
+
+- `express`
+- `cors`
+- `dotenv`
+- `jsonwebtoken`
+- `mongodb`
+
+---
+
+## 🚀 Installation & Running Locally
+
+### Prerequisites
+
+- Node.js and npm installed  
+- MongoDB (Atlas or local instance)  
+- Firebase project set up with Authentication enabled  
+
+### Steps
+
+1. **Clone the client and server repos:**
+
 ```bash
-react-router
-firebase
-axios
-sweetalert2
-react-rating
-react-countup
+git clone https://github.com/sojib-web/reaheck-assignment-11.git
+git clone https://github.com/sojib-web/reaheck-assignment-11-server.git
