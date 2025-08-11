@@ -10,7 +10,7 @@ The **Service Review System** is a modern full-stack web application where users
 
 - **Client Side (Live Website):** [https://service-review-system-a221e.web.app/](https://service-review-system-a221e.web.app/)  
 - **Client Repo:** [GitHub - Client](https://github.com/Programming-Hero-Web-Course4/b11a11-client-side-sojib-web)  
-- **Server Repo:** [GitHub - Server](https://github.com/Programming-Hero-Web-Course4/b11a11-server-side-sojib-web)  
+
 
 ---
 
