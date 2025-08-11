@@ -47,7 +47,7 @@ The **Service Review System** is a modern full-stack web application where users
 ### Client Side
 
 ```bash
-react-router-dom
+react-router
 firebase
 axios
 sweetalert2
