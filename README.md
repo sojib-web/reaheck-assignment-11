@@ -37,8 +37,8 @@ The **Service Review System** is a modern full-stack web application where users
 
 ## 📸 Screenshot
 
-![Service Review System Screenshot](https://i.ibb.co/XYZ1234/service-review-screenshot.png)  
-*(আপনার প্রকৃত স্ক্রিনশটের URL দিয়ে রিপ্লেস করুন)*
+![Service Review System Screenshot](https://i.ibb.co/qMPL09py/service-review-system-a221e-web-app.png)  
+
 
 ---
 
